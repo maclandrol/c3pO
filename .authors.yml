@@ -1,12 +1,28 @@
 - name: Henrik Linusson
   email: henrik@ekkono.ai
+  num_commits: 0
+  first_commit: &id001 2021-10-11 19:27:48.470496
 - name: Giovanni Cherubin
   email: giovanni.cherubin@gmail.com
+  num_commits: 0
+  first_commit: *id001
 - name: tuvelofstrom
   email: tuve.open@gmail.com
+  num_commits: 0
+  first_commit: *id001
 - name: Isak Karlsson
   email: isak.karlsson@gmail.com
+  num_commits: 0
+  first_commit: *id001
 - name: Zygmunt Zając
   email: zajac.zygmunt@gmail.com
+  num_commits: 0
+  first_commit: *id001
 - name: Martín Villanueva
   email: nallivam@gmail.com
+  num_commits: 0
+  first_commit: *id001
+- name: maclandrol
+  email: emmanuel.noutahi@hotmail.ca
+  num_commits: 1
+  first_commit: 2021-10-11 19:26:15

@@ -25,7 +25,7 @@ class ErrFunc(abc.ABC):
         pass
 
 
-class BaseModelNc:
+class BaseModelNC:
     """Base class for nonconformity scorers based on an underlying model.
 
     Parameters
@@ -35,7 +35,7 @@ class BaseModelNc:
     err_func : ClassificationErrFunc or RegressionErrFunc
             Error function object.
 
-    normalizer : BaseScorer
+    normalizer : Normalizer
             Normalization model.
 
     beta : float
@@ -45,7 +45,7 @@ class BaseModelNc:
     """
 
     def __init__(self, model, err_func, normalizer=None, beta=0):
-        super(BaseModelNc, self).__init__()
+        super().__init__()
         self.err_func = err_func
         self.model = model
         self.normalizer = normalizer
@@ -57,8 +57,6 @@ class BaseModelNc:
         if self.normalizer is not None and hasattr(self.normalizer, "base_model"):
             self.normalizer.base_model = self.model
 
-        self.last_x, self.last_y = None, None
-        self.last_prediction = None
         self.clean = False
 
     def fit(self, x, y):

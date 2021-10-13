@@ -1,2 +1,2 @@
 from .classifier import ICPClassifier
-from .regressor import ICPCRegressor
+from .regressor import ICPRegressor

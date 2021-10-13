@@ -38,31 +38,6 @@ class ICPRegressor(BaseICP):
             intervals with regression neural networks. Neural Networks, 24(8),
             842-851.
 
-    Examples
-    --------
-    >>> import numpy as np
-    >>> from sklearn.datasets import load_boston
-    >>> from sklearn.tree import DecisionTreeRegressor
-    >>> from nonconformist.base import RegressorAdapter
-    >>> from nonconformist.icp import ICPRegressor
-    >>> from nonconformist.nc import RegressorNc, AbsErrorErrFunc
-    >>> boston = load_boston()
-    >>> idx = np.random.permutation(boston.target.size)
-    >>> train = idx[:int(idx.size / 3)]
-    >>> cal = idx[int(idx.size / 3):int(2 * idx.size / 3)]
-    >>> test = idx[int(2 * idx.size / 3):]
-    >>> model = RegressorAdapter(DecisionTreeRegressor())
-    >>> nc = RegressorNc(model, AbsErrorErrFunc())
-    >>> icp = ICPRegressor(nc)
-    >>> icp.fit(boston.data[train, :], boston.target[train])
-    >>> icp.calibrate(boston.data[cal, :], boston.target[cal])
-    >>> icp.predict(boston.data[test, :], significance=0.10)
-    ...     # doctest: +SKIP
-    array([[  5. ,  20.6],
-            [ 15.5,  31.1],
-            ...,
-            [ 14.2,  29.8],
-            [ 11.6,  27.2]])
     """
 
     def __init__(self, nc_function, condition=None):
