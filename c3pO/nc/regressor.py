@@ -1,6 +1,6 @@
 import abc
 import numpy as np
-from c3pO.nc_functions._base import ErrFunc, BaseModelNc
+from c3pO.nc._base import ErrFunc, BaseModelNC
 
 
 class RegressionErrFunc(ErrFunc):
@@ -75,7 +75,7 @@ class SignErrorErrFunc(RegressionErrFunc):
         return np.vstack([-nc[lower], nc[upper]])
 
 
-class RegressorNc(BaseModelNc):
+class RegressorNC(BaseModelNC):
     """Nonconformity scorer using an underlying regression model.
 
     Parameters
@@ -101,17 +101,13 @@ class RegressorNc(BaseModelNc):
 
     err_func : RegressionErrFunc
         Scorer function used to calculate nonconformity scores.
-
-    See also
-    --------
-    ProbEstClassifierNc, NormalizedRegressorNc
     """
 
     def __init__(self, model, err_func=AbsErrorErrFunc(), normalizer=None, beta=0):
 
         if not isinstance(err_func, RegressionErrFunc):
             raise ValueError("Only classification error function supported")
-        super(RegressorNc, self).__init__(model, err_func, normalizer, beta)
+        super().__init__(model, err_func, normalizer, beta)
 
     def predict(self, x, nc, significance=None):
         """Constructs prediction intervals for a set of test examples.

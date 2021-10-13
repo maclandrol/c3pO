@@ -9,7 +9,7 @@ class ICPClassifier(BaseICP):
 
     Parameters
     ----------
-    nc_function : BaseScorer
+    nc_function : BaseModelNC
             Nonconformity scorer object used to calculate nonconformity of
             calibration examples and test patterns. Should implement ``fit(x, y)``
             and ``calc_nc(x, y)``.
@@ -25,7 +25,7 @@ class ICPClassifier(BaseICP):
     cal_y : numpy array of shape [n_cal_examples]
             Outputs of calibration set.
 
-    nc_function : BaseScorer
+    nc_function : BaseModelNC
             Nonconformity scorer object used to calculate nonconformity scores.
 
     classes : numpy array of shape [n_classes]
@@ -42,31 +42,6 @@ class ICPClassifier(BaseICP):
             intervals with regression neural networks. Neural Networks, 24(8),
             842-851.
 
-    Examples
-    --------
-    >>> import numpy as np
-    >>> from sklearn.datasets import load_iris
-    >>> from sklearn.tree import DecisionTreeClassifier
-    >>> from nonconformist.base import ClassifierAdapter
-    >>> from nonconformist.icp import ICPClassifier
-    >>> from nonconformist.nc import ClassifierNc, MarginErrFunc
-    >>> iris = load_iris()
-    >>> idx = np.random.permutation(iris.target.size)
-    >>> train = idx[:int(idx.size / 3)]
-    >>> cal = idx[int(idx.size / 3):int(2 * idx.size / 3)]
-    >>> test = idx[int(2 * idx.size / 3):]
-    >>> model = ClassifierAdapter(DecisionTreeClassifier())
-    >>> nc = ClassifierNc(model, MarginErrFunc())
-    >>> icp = ICPClassifier(nc)
-    >>> icp.fit(iris.data[train, :], iris.target[train])
-    >>> icp.calibrate(iris.data[cal, :], iris.target[cal])
-    >>> icp.predict(iris.data[test, :], significance=0.10)
-    ...             # doctest: +SKIP
-    array([[ True, False, False],
-            [False,  True, False],
-            ...,
-            [False,  True, False],
-            [False,  True, False]], dtype=bool)
     """
 
     def __init__(self, nc_function, condition=None, smoothing=True):
@@ -104,7 +79,6 @@ class ICPClassifier(BaseICP):
                 p is a boolean array denoting which labels are included in the
                 prediction sets.
         """
-        # TODO: if x == self.last_x ...
         n_test_objects = x.shape[0]
         p = np.zeros((n_test_objects, self.classes.size))
 
@@ -130,14 +104,13 @@ class ICPClassifier(BaseICP):
         for i, c in enumerate(self.classes):
             test_class = np.zeros(x.shape[0], dtype=self.classes.dtype)
             test_class.fill(c)
-
             # TODO: maybe calculate p-values using cython or similar
             # TODO: interpolated p-values
 
             # TODO: nc_function.calc_nc should take X * {y1, y2, ... ,yn}
             test_nc_scores = self.nc_function.score(x, test_class)
             for j, nc in enumerate(test_nc_scores):
-                cal_scores = self.cal_scores[self.condition((x[j, :], c))][::-1]
+                cal_scores = self.cal_scores[self.condition((x[j], c))][::-1]
                 n_cal = cal_scores.size
 
                 idx_left = np.searchsorted(cal_scores, nc, "left")

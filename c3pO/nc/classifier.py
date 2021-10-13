@@ -1,5 +1,5 @@
 import numpy as np
-from c3pO.nc_functions._base import ErrFunc, BaseModelNc
+from c3pO.nc._base import ErrFunc, BaseModelNC
 
 
 class ClassificationErrFunc(ErrFunc):
@@ -48,7 +48,7 @@ class MarginErrFunc(ClassificationErrFunc):
         return 0.5 - ((prob - probs.max(axis=1)) / 2)
 
 
-class ClassifierNc(BaseModelNc):
+class ClassifierNC(BaseModelNC):
     """Nonconformity scorer using an underlying class probability estimating
     model.
 
@@ -77,9 +77,6 @@ class ClassifierNc(BaseModelNc):
     err_func : ClassificationErrFunc
             Scorer function used to calculate nonconformity scores.
 
-    See also
-    --------
-    RegressorNc, NormalizedRegressorNc
     """
 
     def __init__(self, model, err_func=MarginErrFunc(), normalizer=None, beta=0):

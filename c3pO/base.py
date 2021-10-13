@@ -5,13 +5,41 @@ import torch
 EPS = 1e-6
 
 
-class PLModelWrapper:
+class ModelWrapper:
     def __init__(self, model):
+        self.last_x, self.last_y = None, None
+        self.clean = False
         self.model = model
-        self.model.eval()
+
+    def eval(self):
+        if isinstance(self.model, torch.nn.Module):
+            self.model.eval()
+
+    def predict(self, x, *args, **kwargs):
+        """Returns the prediction made by the underlying model.
+        Parameters
+        ----------
+        x : numpy array of shape [n_samples, n_features]
+            Inputs of test examples.
+        Returns
+        -------
+        y : numpy array of shape [n_samples]
+            Predicted outputs of test examples.
+        """
+        self.eval()
+        self.last_x = x
+        self.last_y = self._predict(x, *args, **kwargs)
+        return self.last_y.copy()
 
     @torch.no_grad()
-    def predict(self, x):
+    def _predict(self, x, *args, **kwargs):
+        if isinstance(self.model, torch.nn.Module):
+            return self.model(x)
+        # for classifier takes predict_proba first
+        elif hasattr(self.model, "predict_proba"):
+            return self.model.predict_proba(x)
+        elif hasattr(self.model, "predict"):
+            return self.model.predict(x)
         return self.model(x)
 
 
